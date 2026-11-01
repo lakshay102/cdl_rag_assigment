@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Gender Budget RAG</title>
+<style>
+  :root {
+    --bg: #0f172a;
+    --panel: #1e293b;
+    --panel-2: #273449;
+    --border: #334155;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --accent: #6366f1;
+    --accent-hover: #4f46e5;
+    --good: #22c55e;
+    --warn: #f59e0b;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: linear-gradient(180deg, #0b1120 0%, #0f172a 100%);
+    color: var(--text);
+    min-height: 100vh;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 40px 20px 80px; }
+  header { margin-bottom: 28px; }
+  h1 { font-size: 1.6rem; margin: 0 0 6px; letter-spacing: -0.01em; }
+  .sub { color: var(--muted); font-size: 0.92rem; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 0.75rem; padding: 3px 10px; border-radius: 999px;
+    background: var(--panel-2); border: 1px solid var(--border); color: var(--muted);
+    margin-top: 10px;
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+  .dot.ok { background: var(--good); }
+  .dot.bad { background: var(--warn); }
+
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+    margin-bottom: 18px;
+  }
+  textarea {
+    width: 100%; min-height: 84px; resize: vertical;
+    background: var(--panel-2); color: var(--text);
+    border: 1px solid var(--border); border-radius: 10px;
+    padding: 12px 14px; font-size: 1rem; font-family: inherit;
+  }
+  textarea:focus { outline: 2px solid var(--accent); border-color: transparent; }
+  .controls {
+    display: flex; align-items: center; gap: 14px; margin-top: 12px; flex-wrap: wrap;
+  }
+  button {
+    background: var(--accent); color: #fff; border: none;
+    padding: 11px 22px; border-radius: 10px; font-size: 0.95rem;
+    font-weight: 600; cursor: pointer; transition: background 0.15s;
+  }
+  button:hover:not(:disabled) { background: var(--accent-hover); }
+  button:disabled { opacity: 0.55; cursor: not-allowed; }
+  .controls label { color: var(--muted); font-size: 0.85rem; display: flex; align-items: center; gap: 6px; }
+  select, input[type="text"] {
+    background: var(--panel-2); color: var(--text);
+    border: 1px solid var(--border); border-radius: 8px; padding: 6px 8px;
+  }
+  input[type="text"] { font-family: inherit; width: 180px; }
+  .warn-hint { color: var(--warn); font-size: 0.78rem; margin-top: 10px; }
+
+  .answer-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .tag {
+    font-size: 0.72rem; padding: 2px 9px; border-radius: 999px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .tag.yes { background: rgba(34,197,94,0.15); color: var(--good); }
+  .tag.no  { background: rgba(245,158,11,0.15); color: var(--warn); }
+  .answer-text { font-size: 1.08rem; line-height: 1.6; white-space: pre-wrap; }
+  .answer-text.empty { color: var(--muted); font-style: italic; }
+  .meta { color: var(--muted); font-size: 0.78rem; margin-top: 12px; }
+
+  .src { list-style: none; padding: 0; margin: 8px 0 0; }
+  .src li {
+    font-size: 0.85rem; color: var(--text);
+    background: var(--panel-2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 7px 11px; margin-bottom: 6px;
+    font-family: "Consolas", monospace;
+  }
+  details summary {
+    cursor: pointer; color: var(--muted); font-size: 0.85rem; margin-top: 4px;
+  }
+  .ctx {
+    margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;
+  }
+  .ctx-item {
+    background: var(--panel-2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 10px 12px; margin-bottom: 8px;
+    font-size: 0.85rem; line-height: 1.5;
+  }
+  .ctx-item .head { color: var(--muted); font-size: 0.75rem; margin-bottom: 5px; font-family: "Consolas", monospace; }
+  h2 { font-size: 1rem; margin: 0; }
+  .spinner {
+    width: 15px; height: 15px; border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: #fff; border-radius: 50%;
+    display: inline-block; animation: spin 0.7s linear infinite; vertical-align: -2px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .hidden { display: none; }
+  .err { color: #fca5a5; font-size: 0.9rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Gender Budget RAG</h1>
+    <div class="sub">Ask natural-language questions over the Indian gender budget corpus. Answers come only from the vector database.</div>
+    <div class="badge"><span class="dot" id="healthDot"></span><span id="healthText">checking index…</span></div>
+  </header>
+
+  <div class="card">
+    <textarea id="question" placeholder="e.g. What was the allocation for Saksham Anganwadi and Poshan 2.0 in the Union Gender Budget Statement for 2023-24 (BE)?"></textarea>
+    <div class="controls">
+      <button id="askBtn">Ask</button>
+      <label>Sources to retrieve
+        <select id="topk">
+          <option value="3">3</option>
+          <option value="5" selected>5</option>
+          <option value="8">8</option>
+          <option value="10">10</option>
+          <option value="all">all</option>
+        </select>
+      </label>
+      <label>LLM provider
+        <select id="provider">
+          <option value="">env default</option>
+          <option value="local">local</option>
+          <option value="openai">openai</option>
+          <option value="gemini">gemini</option>
+        </select>
+      </label>
+      <label>Model
+        <input id="model" type="text" placeholder="env default" />
+      </label>
+    </div>
+    <div id="topkWarn" class="warn-hint hidden">
+      “all” searches the entire corpus and reranks every chunk, so answers can take much longer.
+    </div>
+  </div>
+
+  <div class="card hidden" id="resultCard">
+    <div class="answer-head">
+      <h2>Answer</h2>
+      <span class="tag" id="answerTag"></span>
+    </div>
+    <div class="answer-text" id="answerText"></div>
+    <div class="meta" id="answerMeta"></div>
+
+    <div id="sourcesBlock" class="hidden">
+      <div class="meta" style="margin-top:14px">Sources</div>
+      <ul class="src" id="sourcesList"></ul>
+    </div>
+
+    <details id="ctxDetails">
+      <summary>Retrieved context</summary>
+      <div class="ctx" id="ctxList"></div>
+    </details>
+  </div>
+
+  <div class="card err hidden" id="errCard"></div>
+</div>
+
+<script>
+const askBtn = document.getElementById("askBtn");
+const questionEl = document.getElementById("question");
+const topkEl = document.getElementById("topk");
+const topkWarn = document.getElementById("topkWarn");
+const providerEl = document.getElementById("provider");
+const modelEl = document.getElementById("model");
+const resultCard = document.getElementById("resultCard");
+const answerTag = document.getElementById("answerTag");
+const answerText = document.getElementById("answerText");
+const answerMeta = document.getElementById("answerMeta");
+const sourcesBlock = document.getElementById("sourcesBlock");
+const sourcesList = document.getElementById("sourcesList");
+const ctxDetails = document.getElementById("ctxDetails");
+const ctxList = document.getElementById("ctxList");
+const errCard = document.getElementById("errCard");
+
+function srcLabel(s) {
+  let label = s.file || "unknown";
+  if (s.page != null) label += "  (page " + s.page + ")";
+  if (s.sheet != null) label += "  (sheet: " + s.sheet + ")";
+  if (s.row != null) label += "  row " + s.row;
+  return label;
+}
+
+async function checkHealth() {
+  const dot = document.getElementById("healthDot");
+  const txt = document.getElementById("healthText");
+  try {
+    const r = await fetch("/api/health");
+    const d = await r.json();
+    const info = d.llm_info || {};
+    const llmLabel = info.provider
+      ? info.provider + "/" + info.model + (d.llm ? "" : " (offline)")
+      : "";
+    if (info.provider) {
+      providerEl.value = info.provider;
+      modelEl.placeholder = info.model || "env default";
+    }
+    if (d.ready) {
+      dot.className = "dot ok";
+      txt.textContent =
+        "index ready — " + d.chunks + " chunks" +
+        (llmLabel ? "  ·  " + llmLabel : "");
+    } else {
+      dot.className = "dot bad";
+      txt.textContent = "index not built — run ingest.py";
+    }
+  } catch (e) {
+    dot.className = "dot bad";
+    txt.textContent = "backend unreachable";
+  }
+}
+
+function isAllSources() {
+  return topkEl.value === "all";
+}
+
+function updateTopkWarn() {
+  topkWarn.classList.toggle("hidden", !isAllSources());
+}
+
+async function ask() {
+  const question = questionEl.value.trim();
+  if (!question) return;
+
+  const all = isAllSources();
+  askBtn.disabled = true;
+  askBtn.innerHTML = all
+    ? '<span class="spinner"></span> Asking (all sources, this can take a while)…'
+    : '<span class="spinner"></span> Asking…';
+  errCard.classList.add("hidden");
+
+  // "all" is sent as k = 0; the backend treats it as "every chunk in the index".
+  const payload = { question, k: all ? 0 : parseInt(topkEl.value, 10) };
+  if (providerEl.value) payload.provider = providerEl.value;
+  if (modelEl.value.trim()) payload.model = modelEl.value.trim();
+
+  try {
+    const r = await fetch("/api/ask", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (!r.ok) {
+      const body = await r.json().catch(() => ({}));
+      throw new Error(body.detail || ("Request failed (" + r.status + ")"));
+    }
+    render(await r.json());
+  } catch (e) {
+    errCard.textContent = "Error: " + e.message;
+    errCard.classList.remove("hidden");
+  } finally {
+    askBtn.disabled = false;
+    askBtn.textContent = "Ask";
+  }
+}
+
+function render(data) {
+  resultCard.classList.remove("hidden");
+
+  if (data.answered) {
+    answerTag.textContent = "answered";
+    answerTag.className = "tag yes";
+    answerText.textContent = data.answer || "(no extractive passage found)";
+    answerText.className = "answer-text";
+  } else {
+    answerTag.textContent = "not in corpus";
+    answerTag.className = "tag no";
+    answerText.textContent =
+      "The corpus does not appear to contain the information needed to answer this question.";
+    answerText.className = "answer-text empty";
+  }
+
+  const scope =
+    data.k_requested === 0
+      ? "all " + (data.candidates ?? "?") + " chunks searched, top " +
+        data.context.length + " kept"
+      : data.context.length + " chunks retrieved";
+  answerMeta.textContent =
+    "engine " + (data.engine || "-") +
+    "  ·  " + scope +
+    "  ·  best cosine distance " + data.best_distance +
+    "  ·  threshold " + data.threshold +
+    (data.llm_error ? "  ·  LLM error: " + data.llm_error : "");
+
+  sourcesList.innerHTML = "";
+  if (data.sources && data.sources.length) {
+    sourcesBlock.classList.remove("hidden");
+    data.sources.forEach((s) => {
+      const li = document.createElement("li");
+      li.textContent = srcLabel(s);
+      sourcesList.appendChild(li);
+    });
+  } else {
+    sourcesBlock.classList.add("hidden");
+  }
+
+  ctxList.innerHTML = "";
+  (data.context || []).forEach((c) => {
+    const div = document.createElement("div");
+    div.className = "ctx-item";
+    const head = document.createElement("div");
+    head.className = "head";
+    head.textContent =
+      "[" + (c.distance == null ? "no vector hit" : c.distance) +
+      (c.score != null ? "  ·  rerank score " + c.score : "") +
+      "] " + srcLabel(c);
+    const body = document.createElement("div");
+    body.textContent = c.text;
+    div.appendChild(head);
+    div.appendChild(body);
+    ctxList.appendChild(div);
+  });
+  ctxDetails.open = false;
+}
+
+askBtn.addEventListener("click", ask);
+topkEl.addEventListener("change", updateTopkWarn);
+questionEl.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) ask();
+});
+updateTopkWarn();
+checkHealth();
+</script>
+</body>
+</html>

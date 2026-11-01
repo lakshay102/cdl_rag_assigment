@@ -1,0 +1,33 @@
+{
+    "question_id": "E01", 
+    "answered": true, 
+    "answer": "For Delhi's 2023-24 gender budget, the allocation for Menstrual Hygiene in Girls (KISHORI) under Part A and Part B is ₹233000 (Part A) and ₹233000 (Part B), respectively.", "sources":
+    [
+        {
+            "file": "gender_budget_2023-24.pdf", "page": 1
+        }, 
+        {
+            "file": "gender_budget_2022-23.pdf", "page": 1
+        }, 
+        {
+            "file": "gender_budget_2024-25.pdf", "page": 1
+        }
+    ]
+}
+{"question_id": "E02", "answered": true, "answer": "For Delhi, in 2026-27, the outlay for implementation of the Protection of Women from Domestic Violence Act, 2005 under Part A is ₹29600 crores and under Part B is ₹737 crores. [S1]", "sources": [{"file": "gender_budget_2026-27.pdf", "page": 3}]}
+{"question_id": "E03", "answered": true, "answer": "For Ladli Yojna in Delhi for 2022-23, the outlay under Part A and Part B is ₹1000000 and ₹1000000 respectively [S1].", "sources": [{"file": "gender_budget_2022-23.pdf", "page": 4}]}
+{"question_id": "E04", "answered": true, "answer": "For the Union Gender Budget Statement for 2023-24 (BE), the allocated amount to Mission Shakti under Part A is Rs 276152.00 Lakh and under Part B is Rs 46800 46800 46800.", "sources": [{"file": "MRF_13_Union_Budget.csv", "row": 307}, {"file": "14-Gender_Budget.pdf", "page": 19}, {"file": "14-Gender_Budget.pdf", "page": 10}]}
+{"question_id": "E05", "answered": true, "answer": "The grand total for 2023-24 (BE) in the Union Gender Budget Statement is ₹223219.75 crores, with Part A and Part B figures not specified in the provided sources.", "sources": [{"file": "14-Gender_Budget.pdf", "page": 19}, {"file": "MRF_13_Union_Budget.csv", "row": 33}, {"file": "MRF_13_Union_Budget.csv", "row": 103}]}
+{"question_id": "E06", "answered": true, "answer": "The Government of India first introduced the Gender Budget Statement in the Union Budget in 2005-06 as part of the Union Budget, [S1] and [S5].", "sources": [{"file": "14-Gender_Budget.pdf", "page": 13}, {"file": "stat20.xls", "sheet": "Sheet1", "row": 2}]}
+{"question_id": "E07", "answered": true, "answer": "For the Bihar scheme to prevent child marriage, a sum of Rs. 5000 is given to the daughters, belonging to BPL families or other marginalised families whose annual income is up to Rs. 60,000 through DBT at the time of marriage [S3]. The household income ceiling is up to Rs. 60,000 [S3, S4].", "sources": [{"file": "17107782611749468962.pdf", "page": 22}]}
+{"question_id": "E08", "answered": false, "answer": "", "sources": []}
+{"question_id": "E09", "answered": true, "answer": "दिल्ली के 2022-23 जेंडर बजट में किशोरी योजना के लिए कोई राशि आवंटित नहीं की गई थी, क्योंकि स्रोत [S1] में किसी भी किशोरी योजना के बारे में जानकारी नहीं है।", "sources": [{"file": "17107782611749468962.pdf", "page": 43}]}
+{"question_id": "E10", "answered": true, "answer": "बिहार की मुख्यमंत्री कन्या उत्थान योजना के तहत कन्या के जन्म पर कोई राशि नहीं दी जाती है, लेकिन प्रधानमंत्री मातृ वंदना योजना (पीएमएमवीयी) के तहत पहले बच्चे के लिए राशि दी जाती है जो 5000 रुपये है। [S1]", "sources": [{"file": "17107782611749468962.pdf", "page": 31}]}
+{"question_id": "E11", "answered": true, "answer": "For Delhi's allocation for Ladli Yojna in 2019-20, the figures are 1000000 crores [S4].", "sources": [{"file": "gender_budget_2022-23.pdf", "page": 4}]}
+{"question_id": "E12", "answered": true, "answer": "दिल्ली के 2018-19 जेंडर बजट में लाडली योजना के लिए कोई आवंटन नहीं किया गया था। [S1]", "sources": [{"file": "17107782611749468962.pdf", "page": 30}]}
+{"question_id": "E13", "answered": true, "answer": "For Kerala in 2024-25, the total gender budget allocation is Rs. 7562291.75 Lakh [S1].", "sources": [{"file": "14-Gender_Budget.pdf", "page": 21}]}
+{"question_id": "E14", "answered": true, "answer": "For Delhi's total education budget for 2024-25, the total outlay under Part A is ₹ 293,000 crores [S1] and under Part B is ₹ 356,340,000 [S1].", "sources": [{"file": "gender_budget_2024-25.pdf", "page": 1}]}
+{"question_id": "E15", "answered": true, "answer": "For the Mahila Samriddhi Yojana in the Odisha gender budget 2024-25, the allocated amount under Part A is Rs 100 Lakh [S3] and under Part B is Rs 0 (NOT IN CORPUS).", "sources": [{"file": "14-Gender_Budget.pdf", "page": 22}]}
+{"question_id": "E16", "answered": true, "answer": "For Bihar's total state budget for 2024-25, the gender budget was 0.52% of the total state budget outlay [S1].", "sources": [{"file": "17107782611749468962.pdf", "page": 16}]}
+{"question_id": "E17", "answered": true, "answer": "For Ladli Yojna in Delhi, the allocation in 2012-13 was 1000000 crores [S4].", "sources": [{"file": "gender_budget_2012-13.pdf", "page": 4}]}
+{"question_id": "E18", "answered": true, "answer": "For Odisha, the total allocation under Part A (Gender-Specific) is Rs 1,500 Lakh [S1] and under Part B (Gender-Sensitive) is Rs 5774450.52 Lakh [S3].", "sources": [{"file": "14-Gender_Budget.pdf", "page": 19}, {"file": "14-Gender_Budget.pdf", "page": 28}]}

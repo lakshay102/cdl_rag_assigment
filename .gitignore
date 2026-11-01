@@ -1,0 +1,21 @@
+# virtualenv and caches
+venv/
+__pycache__/
+*.pyc
+
+# local secrets / environment (copy from .env.example)
+.env
+
+# generated vector store (rebuild with `python ingest.py`)
+chroma_db/
+
+# chunk-size sweep databases / reports (python tune_chunks.py)
+.sweeps/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+corpus/

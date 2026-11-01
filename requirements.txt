@@ -1,0 +1,28 @@
+# RAG over Gender Budget documents -- pinned dependencies
+# Install into the venv only:
+#   .\venv\Scripts\python.exe -m pip install -r requirements.txt
+
+# Web server / API
+fastapi==0.115.6
+uvicorn==0.32.1
+pydantic==2.10.3
+
+# Loads a local .env file (optional at runtime; env vars still work)
+python-dotenv==1.2.4
+
+# Vector database (persistent). Ships onnxruntime + its own
+# all-MiniLM-L6-v2 ONNX embedding function, so no torch needed.
+chromadb==0.5.23
+
+# Document parsing
+pypdf==5.1.0
+pdfplumber==0.11.4
+
+# Tabular data (CSV + legacy .xls)
+pandas==2.2.3
+xlrd==2.0.1
+
+# Client for OpenAI-compatible LLM endpoints used for grounded answer
+# synthesis: local llama.cpp, OpenAI, or Google Gemini. Optional at runtime
+# (extractive fallback exists).
+openai==1.57.4
